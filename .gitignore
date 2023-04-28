@@ -1,3 +1,5 @@
 .idea
 main.py
 pygame.py
+__pycache__
+*.pyc

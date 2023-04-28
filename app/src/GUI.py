@@ -56,15 +56,9 @@ class GUI(object):
         self.input_entry.bind("<Key>", lambda e: "break")
 
         # Screen Configuration
-        self.load_photo = None
-        self.back_img = self.canvas.create_image((0, 0), anchor=N + W)
         self.utils.loading_screen(self.canvas)
         self.root.after(500, lambda canvas=self.canvas: self.utils.loading_screen(canvas, "businfo_boot1.png"))
         self.root.after(1000, self.post_init)
-
-        # Bind Command and DigitPad
-        ButtonHandler(self.digit_frame, self.input_entry, self.info, self.canvas)
-
         # App Loop
         self.root.mainloop()
 
@@ -79,6 +73,11 @@ class GUI(object):
         self.input_entry.place(x=17, y=220)
         # Digit Init
         self.digit_frame.place()
+
+        screen_index = 0
+
+        # Bind Command and DigitPad
+        ButtonHandler(self.digit_frame, self.input_entry, self.info, self.canvas, screen_index)
 
 
 if __name__ == "__main__":

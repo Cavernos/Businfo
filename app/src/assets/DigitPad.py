@@ -1,5 +1,5 @@
 import os
-from tkinter import Frame, Button
+from tkinter import Frame, Button, SUNKEN
 
 from PIL import ImageTk, Image
 
@@ -39,7 +39,7 @@ class DigitPad:
                                        image=self.image[i],
                                        width=self.button_width[i],
                                        height=self.button_height[i],
-                                       relief="sunken",
+                                       relief=SUNKEN,
                                        cursor="hand2",
                                        border=0
                                        ))

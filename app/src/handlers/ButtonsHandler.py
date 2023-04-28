@@ -1,3 +1,4 @@
+import json
 import logging
 import time
 from tkinter import Entry, END, Canvas, N, W
@@ -11,8 +12,8 @@ from app.src.assets.Info import Info
 
 
 class ButtonHandler:
-    def __init__(self, digit_pad: DigitPad, entry: Entry, info: Info, canvas: Canvas):
-
+    def __init__(self, digit_pad: DigitPad, entry: Entry, info: Info, canvas: Canvas, screen_index: int):
+        self.screen_index = screen_index
         self.utils = Utils()
         self.canvas = canvas
         self.info = info
@@ -54,38 +55,56 @@ class ButtonHandler:
             case 11:
                 self.entry.delete(0, END)
             case 12:
-                text = self.entry.get()[0:6]
-                self.entry.place_forget()
-                self.entry.delete(0, END)
-                self.utils.loading_screen(self.canvas, "businfo_ID_loading.png", (0, 67, 1024, 640))
-                self.progress_bar.place(x=20, y=190)
-                self.progress_start()
-                if text == "229":
-                    logging.info("Logged In")
-                    self.info.getDriverLabel().config(text="Cn:" + "{:06d}".format(int(text)))
-                    self.canvas.after(1000, self.valid_id)
-                else:
-                    self.progress_bar.place_forget()
-                    self.utils.loading_screen(self.canvas, "businfo_ID_loading_error_WID.png", (0, 67, 1024, 640))
-                    self.canvas.after(1000, self.invalid_id)
-                    logging.info("Logging Failure")
+                if self.screen_index == 0:
+                    self.login()
+                elif self.screen_index == 2:
+                    text = self.entry.get()[0:3]
+                    print(text)
+                    # TODO Enter text variable in a file
+                    self.entry.place_forget()
+                    self.entry.delete(0, END)
+                    self.valid_id()
+                elif self.screen_index == 1:
+                    text = self.entry.get()[0:6]
+                    self.entry.place_forget()
+                    self.entry.delete(0, END)
+                    self.service_search(text)
             case _:
                 logging.info("No Button correspond to this")
 
     def mod_push(self, index):
         match index:
             case 0:
-                print("0")
+                self.screen_index = 1
+                self.removeModeButtons()
+                self.service()
             case 1:
-                print("2")
+                self.screen_index = 2
+                self.removeModeButtons()
+                self.special_dest()
             case 2:
-                self.mod_handler.getModButtons().mod_frame.place_forget()
-                for i in range(0, 3):
-                    self.mod_buttons[i].place_forget()
+                self.removeModeButtons()
                 self.invalid_id()
                 self.digit_pad.place()
             case _:
                 logging.info("No Button correspond to this")
+
+    def login(self):
+        text = self.entry.get()[0:6]
+        self.entry.place_forget()
+        self.entry.delete(0, END)
+        self.utils.loading_screen(self.canvas, "businfo_ID_loading.png", (0, 67, 1024, 640))
+        self.progress_bar.place(x=20, y=190)
+        self.progress_start()
+        if text == "229":
+            logging.info("Logged In")
+            self.info.getDriverLabel().config(text="Cn:" + "{:06d}".format(int(text)))
+            self.canvas.after(1000, self.valid_id)
+        else:
+            self.progress_bar.place_forget()
+            self.utils.loading_screen(self.canvas, "businfo_ID_loading_error_WID.png", (0, 67, 1024, 640))
+            self.canvas.after(2000, self.invalid_id)
+            logging.info("Logging Failure")
 
     def invalid_id(self):
         self.utils.loading_screen(self.canvas, "businfo_ID_input.png", (0, 67, 1024, 640))
@@ -108,3 +127,48 @@ class ButtonHandler:
             x += 1
             self.canvas.update_idletasks()
         self.progress_bar['value'] = 0
+
+    def removeModeButtons(self):
+        self.mod_handler.getModButtons().mod_frame.place_forget()
+        for i in range(0, 3):
+            self.mod_buttons[i].place_forget()
+
+    def special_dest(self):
+        self.utils.loading_screen(self.canvas, "businfo_LK_input.png", (0, 67, 1024, 640))
+        self.digit_pad.place()
+        self.entry.place(x=17, y=220)
+
+    def service(self):
+        self.utils.loading_screen(self.canvas, "businfo_service_input.png", (0, 67, 1024, 640))
+        self.digit_pad.place()
+        self.entry.place(x=17, y=220)
+
+    def service_search(self, service_int):
+        self.utils.loading_screen(self.canvas, "businfo_service_loading.png", (0, 67, 1024, 640))
+        self.progress_bar.place(x=20, y=190)
+        self.progress_start()
+        gprs = False
+        services = {2}
+        for service in services:
+            if int(service_int) == service:
+                gprs = True
+            else:
+                gprs = False
+        if gprs:
+            self.progress_bar.place_forget()
+            self.service_found()
+        else:
+            self.progress_bar.place_forget()
+            self.utils.loading_screen(self.canvas, "businfo_service_loading_error_gprs.png", (0, 67, 1024, 640))
+            self.canvas.after(2000, self.service_not_found)
+
+    def service_found(self):
+        print(0)
+        # TODO
+        pass
+
+    def service_not_found(self):
+        self.utils.loading_screen(self.canvas, "businfo_service_input.png", (0, 67, 1024, 640))
+        self.info.getServiceLabel().config(text="S:000000")
+        self.entry.place(x=17, y=220)
+

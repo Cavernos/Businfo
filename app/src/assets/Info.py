@@ -34,3 +34,6 @@ class Info:
 
     def getDriverLabel(self):
         return self.driver_label
+
+    def getServiceLabel(self):
+        return self.service_label

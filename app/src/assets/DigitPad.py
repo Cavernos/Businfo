@@ -2,15 +2,14 @@ import os
 from tkinter import Frame, Button, SUNKEN
 
 from PIL import ImageTk, Image
-
 from definitions import ROOT_DIR
 
 
 class DigitPad:
     def __init__(self, panel: Frame, border: int, bg: str, width: int, height: int, x: int, y: int):
-        self.digit_frame = Frame(panel, border=border, bg=bg, width=width, height=height)
         self.x = x
         self.y = y
+        self.digit_frame = Frame(panel, border=border, bg=bg, width=width, height=height)
         self.image = []
         self.buttons = []
         self.button_width = [int()] * 13

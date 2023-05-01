@@ -3,7 +3,7 @@ from tkinter import Frame, Label, Tk
 
 
 class Info:
-    def __init__(self, panel: Frame | Tk, border: int, bg: str, width: int, height: int):
+    def __init__(self, panel: Frame | Tk, border: int, bg: str, width: int, height: int, service_label: Label):
         self.info = Frame(panel, border=border, bg=bg, width=width, height=height)
         self.font = ['US_MSFont_Faremaster', 25]
         self.bg_color = "#312D8C"
@@ -15,6 +15,8 @@ class Info:
         self.service_label = Label(self.info, font=self.font, fg="white", bg=self.bg_color, text="S:000000")
         self.destination_label = Label(self.info, font=self.font, fg="white", bg=self.bg_color, text="D:000")
         self.line_label = Label(self.info, font=self.font, fg="white", bg=self.bg_color, text="L:0000")
+
+        self.service = service_label
 
     def getInfoFrame(self):
         return self.info
@@ -37,3 +39,6 @@ class Info:
 
     def getServiceLabel(self):
         return self.service_label
+
+    def getServiceInfo(self):
+        return self.service

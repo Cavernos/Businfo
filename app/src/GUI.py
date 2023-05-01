@@ -33,11 +33,13 @@ class GUI(object):
         self.canvas.pack()
 
         # Infos Frame
-        self.info = Info(self.root, border=0, bg=self.bg_color, width=1024, height=67)
+        self.service_label = Label(self.main_frame, font=self.font, fg="white", bg="#3A393A", text="Pas de service en "
+                                                                                                   "charge")
+        self.info = Info(self.root, border=0, bg=self.bg_color, width=1024, height=67, service_label=self.service_label)
         self.info.clock()
 
         # Service Info
-        self.service_label = Label(self.main_frame, font=self.font, fg="white", bg="#3A393A", text="Pas de service en charge")
+
 
         # Digits Frame
         self.digit_frame = DigitPad(self.main_frame, border=0, bg="#3A393A", width=290, height=460, x=405, y=83)

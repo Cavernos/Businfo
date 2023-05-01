@@ -5,7 +5,7 @@ from tkinter.ttk import Progressbar
 class ProgressBar:
     def __init__(self, canvas, length):
         self.canvas = canvas
-        self.progress_bar = Progressbar(canvas,  length=length)
+        self.progress_bar = Progressbar(canvas, length=length)
 
     def getBar(self):
         return self.progress_bar

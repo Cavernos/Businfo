@@ -8,6 +8,7 @@ from app.src.assets.DigitPad import DigitPad
 from app.src.assets.EscapeButton import EscapeButton
 from app.src.assets.MenuReturnButton import MenuReturnButton
 from app.src.assets.ProgressBar import ProgressBar
+from app.src.handlers.Login import Login
 from app.src.handlers.ModHandler import ModHandler
 from app.src.handlers.ServiceHandler import ServiceHandler
 from app.src.utils.utils import Utils
@@ -30,12 +31,19 @@ class ButtonHandler:
         self.progress_bar = ProgressBar(self.canvas, length=327)
         self.escape_button = EscapeButton(self.canvas, border=0, width=194, height=94, x=823, y=470)
         self.menu_return_button = MenuReturnButton(self.canvas, border=0, width=90, height=60, x=715, y=506)
+        self.login = Login(self.entry,
+                           self.progress_bar,
+                           self.canvas,
+                           self.info,
+                           self.mod_handler,
+                           self.escape_button,
+                           self.menu_return_button)
 
         self.service_handler = ServiceHandler(self.canvas, self.progress_bar, info, entry, digit_pad)
-        self.is_login = False
 
         for i in range(0, 13):
             self.digit_buttons[i].config(command=lambda j=i: self.digit_push(j))
+
         self.escape_button.getItem().config(command=self.esc_push)
         self.menu_return_button.getItem().config(command=self.return_push)
 
@@ -67,47 +75,65 @@ class ButtonHandler:
             case 11:
                 self.entry.delete(0, END)
             case 12:
-                if self.screen_index == 0:
-                    self.login()
-                elif self.screen_index == 2:
-                    text = self.entry.get()[0:3]
-                    print(text)
-                    # TODO Enter text variable in a file
-                    self.entry.place_forget()
-                    self.entry.delete(0, END)
-                    self.valid_id()
-                elif self.screen_index == 1:
-                    text = self.entry.get()[0:6]
-                    self.entry.place_forget()
-                    self.entry.delete(0, END)
-                    if self.service_handler.active_service:
-                        # TODO Pass Service Object
-                        self.service_handler.service_found({"next_start": "19:15:00"})
-                    else:
+                match self.screen_index:
+                    # Screen Login
+                    case 0:
+                        self.login.login()
+                        self.canvas.after(1000, self.assign_mod_action)
+                    # Screen Service
+                    case 1:
+                        text = self.entry.get()[0:6]
+                        self.entry.place_forget()
+                        self.entry.delete(0, END)
                         self.service_handler.service_search(text)
+                    # Screen Special dest
+                    case 2:
+                        text = self.entry.get()[0:3]
+                        print(text)
+                        # TODO Enter text variable in a file
+                        self.entry.place_forget()
+                        self.entry.delete(0, END)
+                        self.info.getDestinationLabel().config(text="D:" + "{:03}".format(int(text)))
+                        self.login.valid_id()
             case _:
                 logging.info("No Button.py correspond to this")
 
     def mod_push(self, index):
         match index:
+            # Service Button
             case 0:
                 self.screen_index = 1
                 self.removeModeButtons()
                 self.service_handler.service()
+                if self.service_handler.active_service:
+                    self.service_handler.recap()
+
+            # Special Dest Button
             case 1:
                 self.screen_index = 2
                 self.removeModeButtons()
                 self.special_dest()
+            # Finish service Button
             case 2:
-                self.removeModeButtons()
-                self.invalid_id()
-                self.service_handler.active_service = False
-                self.info.getServiceLabel().config(text="S:000000")
-                self.info.getServiceInfo().config(text="Pas de Service en charge")
-                self.screen_index = 0
-                self.digit_pad.place()
+                self.finish_service()
             case _:
                 logging.info("No Button.py correspond to this")
+
+    def finish_service(self):
+        self.removeModeButtons()
+        self.login.invalid_id()
+        self.service_handler.active_service = False
+        self.info.getServiceLabel().config(text="S:000000")
+        self.info.getLineLabel().config(text="L:0000")
+        self.info.getDestinationLabel().config(text="D:000")
+        self.info.getServiceInfo().config(text="Pas de Service en charge")
+        self.screen_index = 0
+        self.digit_pad.place()
+
+    def special_dest(self):
+        self.utils.loading_screen(self.canvas, "businfo_LK_input.png", (0, 67, 1024, 640))
+        self.digit_pad.place()
+        self.entry.place(x=17, y=220)
 
     def esc_push(self):
         # TODO
@@ -117,47 +143,22 @@ class ButtonHandler:
         if self.login and self.screen_index == 1:
             self.entry.delete(0, END)
             self.entry.place_forget()
+            recap_info = self.service_handler.getRecapInfo()
+            for i in range(0, 3):
+                recap_info[i].place_forget()
             self.mod_handler.generate("businfo_mode_select.png", (0, 67, 1024, 640))
 
-    def login(self):
-        text = self.entry.get()[0:6]
-        self.entry.place_forget()
-        self.entry.delete(0, END)
-        self.utils.loading_screen(self.canvas, "businfo_ID_loading.png", (0, 67, 1024, 640))
-        self.progress_bar.getBar().place(x=20, y=190)
-        self.progress_bar.progress_start()
-        if text == "229":
-            logging.info("Logged In")
-            self.info.getDriverLabel().config(text="Cn:" + "{:06d}".format(int(text)))
-            self.canvas.after(1000, self.valid_id)
+    def assign_mod_action(self):
+        if self.login.is_login:
+            self.mod_buttons = self.mod_handler.getModButtons().getButtons()
+            for i in range(0, 3):
+                self.mod_buttons[i].config(command=lambda j=i: self.mod_push(j))
         else:
-            self.progress_bar.getBar().place_forget()
-            self.utils.loading_screen(self.canvas, "businfo_ID_loading_error_WID.png", (0, 67, 1024, 640))
-            self.canvas.after(2000, self.invalid_id)
-            logging.info("Logging Failure")
-
-    def invalid_id(self):
-        self.utils.loading_screen(self.canvas, "businfo_ID_input.png", (0, 67, 1024, 640))
-        self.info.getDriverLabel().config(text="Cn:000000")
-        self.entry.place(x=17, y=220)
-        self.is_login = False
-
-    def valid_id(self):
-        self.progress_bar.getBar().place_forget()
-        self.mod_handler.generate("businfo_mode_select.png", (0, 67, 1024, 640))
-        self.escape_button.place()
-        self.menu_return_button.place()
-        self.mod_buttons = self.mod_handler.getModButtons().getButtons()
-        self.is_login = True
-        for i in range(0, 3):
-            self.mod_buttons[i].config(command=lambda j=i: self.mod_push(j))
+            logging.warning("Please Login")
 
     def removeModeButtons(self):
         self.mod_handler.getModButtons().mod_frame.place_forget()
         for i in range(0, 3):
             self.mod_buttons[i].place_forget()
 
-    def special_dest(self):
-        self.utils.loading_screen(self.canvas, "businfo_LK_input.png", (0, 67, 1024, 640))
-        self.digit_pad.place()
-        self.entry.place(x=17, y=220)
+

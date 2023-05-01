@@ -1,15 +1,14 @@
 import os
-from tkinter import Button, Canvas
-from tkinter.constants import SUNKEN
+from tkinter import Canvas
 
-from PIL import Image, ImageTk
+from PIL import Image
 
-from app.src.assets.Button import ButtonAsset
+from app.src.assets.Button import Buttons
 from definitions import ROOT_DIR
 
 
-class EscapeButton(ButtonAsset):
+class EscapeButton(Buttons):
     def __init__(self, panel: Canvas, border: int, width: int, height: int, x: int, y: int):
         super().__init__(panel, border, width, height, x, y)
-        self.image = Image.open(os.path.join(ROOT_DIR, "texture", "escape_button.png"))
+        self.image = Image.open(os.path.join(ROOT_DIR, "texture", "buttons", "escape_button.png"))
         super().createButton()

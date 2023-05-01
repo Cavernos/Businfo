@@ -32,7 +32,7 @@ class DigitPad:
 
     def addButtons(self):
         for i in range(0, 13):
-            image = Image.open(os.path.join(ROOT_DIR, "texture", "digits", f"{i}.png"))
+            image = Image.open(os.path.join(ROOT_DIR, "texture", "buttons", "digits", f"{i}.png"))
             self.image.append(ImageTk.PhotoImage(image))
             self.buttons.append(Button(self.digit_frame,
                                        image=self.image[i],

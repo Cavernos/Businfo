@@ -22,7 +22,7 @@ class ModButtons:
 
     def addButtons(self):
         for i in range(0, 3):
-            image = Image.open(os.path.join(ROOT_DIR, "texture", "modMenu", f"{i}.png"))
+            image = Image.open(os.path.join(ROOT_DIR, "texture", "buttons", "modMenu", f"{i}.png"))
             self.image.append(ImageTk.PhotoImage(image))
             self.buttons.append(Button(self.mod_frame,
                                        image=self.image[i],

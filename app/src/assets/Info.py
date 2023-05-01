@@ -42,3 +42,9 @@ class Info:
 
     def getServiceInfo(self):
         return self.service
+
+    def getDestinationLabel(self):
+        return self.destination_label
+
+    def getLineLabel(self):
+        return self.line_label

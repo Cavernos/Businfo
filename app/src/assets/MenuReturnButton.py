@@ -1,16 +1,16 @@
 import os
-from tkinter import Canvas, Button, SUNKEN
+from tkinter import Canvas
 
-from PIL import ImageTk, Image
+from PIL import Image
 
-from app.src.assets.Button import ButtonAsset
+from app.src.assets.Button import Buttons
 from definitions import ROOT_DIR
 
 
-class MenuReturnButton(ButtonAsset):
+class MenuReturnButton(Buttons):
     def __init__(self, panel: Canvas, border: int, width: int, height: int, x: int, y: int):
         super().__init__(panel, border, width, height, x, y)
-        self.image = Image.open(os.path.join(ROOT_DIR, "texture", "menu_return_button.png"))
+        self.image = Image.open(os.path.join(ROOT_DIR, "texture", "buttons", "menu_return_button.png"))
         super().createButton()
 
 

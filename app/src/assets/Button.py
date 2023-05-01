@@ -6,7 +6,7 @@ from PIL import Image, ImageTk
 from definitions import ROOT_DIR
 
 
-class ButtonAsset:
+class Buttons:
     def __init__(self, panel: Canvas, border: int, width: int, height: int, x: int, y: int):
         self.panel = panel
         self.border = border
@@ -14,7 +14,7 @@ class ButtonAsset:
         self.height = height
         self.y = y
         self.x = x
-        self.image = Image.open(os.path.join(ROOT_DIR, "texture", "menu_return_button.png"))
+        self.image = Image.open(os.path.join(ROOT_DIR, "texture", "buttons", "menu_return_button.png"))
         self.item = None
         self.imagetk = None
 

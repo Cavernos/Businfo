@@ -2,8 +2,9 @@ from tkinter import *
 import logging
 from app.src.assets.DigitPad import DigitPad
 from app.src.assets.Info import Info
-from app.src.handlers.ButtonsHandler import ButtonHandler
+from app.src.handlers.ButtonHandler import ButtonHandler
 from app.src.utils.utils import Utils
+from definitions import font
 
 
 class GUI(object):
@@ -18,7 +19,6 @@ class GUI(object):
         logging.info("Window Init Successfully")
 
         # Some Definition
-        self.font = ['US_MSFont_Faremaster', 25, "italic"]
         self.bg_color = "#312D8C"
         self.width = self.root.winfo_width()
         self.height = self.root.winfo_height()
@@ -33,7 +33,7 @@ class GUI(object):
         self.canvas.pack()
 
         # Infos Frame
-        self.service_label = Label(self.main_frame, font=self.font, fg="white", bg="#3A393A", text="Pas de service en "
+        self.service_label = Label(self.main_frame, font=font, fg="white", bg="#3A393A", text="Pas de service en "
                                                                                                    "charge")
         self.info = Info(self.root, border=0, bg=self.bg_color, width=1024, height=67, service_label=self.service_label)
         self.info.clock()
@@ -46,9 +46,9 @@ class GUI(object):
         self.digit_frame.addButtons()
 
         # Init Entry
-        self.font[2] = ""
+        font[2] = ""
         self.input_entry = Entry(self.main_frame,
-                                 font=self.font,
+                                 font=font,
                                  bg="#313131",
                                  border=0,
                                  insertbackground="white",

@@ -95,6 +95,7 @@ class ButtonHandler:
                         self.entry.delete(0, END)
                         self.info.getDestinationLabel().config(text="D:" + "{:03}".format(int(text)))
                         self.login.valid_id()
+                        self.screen_index = 1
             case _:
                 logging.info("No Button.py correspond to this")
 
@@ -102,11 +103,13 @@ class ButtonHandler:
         match index:
             # Service Button
             case 0:
-                self.screen_index = 1
-                self.removeModeButtons()
-                self.service_handler.service()
                 if self.service_handler.active_service:
+                    self.removeModeButtons()
                     self.service_handler.recap()
+                else:
+                    self.screen_index = 1
+                    self.removeModeButtons()
+                    self.service_handler.service()
 
             # Special Dest Button
             case 1:
@@ -141,6 +144,7 @@ class ButtonHandler:
 
     def return_push(self):
         if self.login and self.screen_index == 1:
+            self.service_handler.setScreen("mod_chooser")
             self.entry.delete(0, END)
             self.entry.place_forget()
             recap_info = self.service_handler.getRecapInfo()

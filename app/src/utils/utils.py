@@ -20,4 +20,3 @@ class Utils:
         self.load_photo = ImageTk.PhotoImage(new_image)
         canvas.itemconfig(back_img, image=self.load_photo)
         canvas.config(height=height)
-        logging.info("Screen Info changes successfully")

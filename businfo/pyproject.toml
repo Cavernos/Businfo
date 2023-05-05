@@ -1,0 +1,21 @@
+[build-system]
+requires = ["Pillow", "setuptools"]
+
+[project]
+name = "businfo_Cavernos"
+version = "0.0.1"
+authors = [
+  { name="Cavernos", email="louisdescavernes@gmail.com" },
+]
+description = "Businfo en Python"
+readme = "README.md"
+requires-python = ">=3.11"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/Cavernos/Businfo"
+"Bug Tracker" = "https://github.com/Cavernos/Businfo/issues"

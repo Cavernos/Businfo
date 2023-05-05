@@ -1,0 +1,19 @@
+{
+  "number": 2,
+  "line": 20,
+  "ziel": 200,
+  "start": "Congress \t  \t Ibk",
+  "dest": "Hungerburg \t \t Ibk",
+  "next_start": "19:15:00",
+  "stops": {
+    "0": {
+      "name": "Congress \t  \t Ibk",
+      "horaire": "19:15:00"
+    },
+    "1": {
+      "name": "Hungerburg \t \t Ibk",
+      "horaire": "19:25:00"
+    }
+
+  }
+}

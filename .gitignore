@@ -1,6 +1,10 @@
 .idea
 main.py
 pygame.py
-__pycache__
 *.pyc
-python.zip
+installer.ifp
+GUI.spec
+build/
+dist/
+venv
+**/__pycache__

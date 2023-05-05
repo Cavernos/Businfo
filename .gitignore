@@ -1,7 +1,6 @@
 .idea
 main.py
 pygame.py
-*.pyc
 installer.ifp
 GUI.spec
 build/

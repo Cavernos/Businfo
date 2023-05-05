@@ -1,6 +1,8 @@
 import time
 from datetime import datetime
-from tkinter import END, Canvas, Entry, Label
+from tkinter import END, Canvas, Entry, Label, N, W
+
+from PIL import ImageTk
 
 from businfo.src.businfo_Cavernos.assets.DigitPad import DigitPad
 from businfo.src.businfo_Cavernos.assets.Info import Info
@@ -26,7 +28,6 @@ class ServiceHandler:
         self.dest_label = Label(self.canvas, font=font, fg="white", bg="#313131")
         self.start_label = Label(self.canvas, font=font, fg="white", bg="#313131")
         self.late_label = Label(self.canvas, font=font, fg="white", bg="#313131")
-
         self.stops_label = []
         for i in range(len(self.services["stops"])):
             self.stops_label.append(Label(self.canvas,
@@ -34,6 +35,7 @@ class ServiceHandler:
                                           fg="white",
                                           bg="#3A393A",
                                           text=self.services["stops"][str(i)]["name"]))
+        self.arrow = Label(self.canvas, font=font, fg="white", bg="#3A393A")
 
     def service(self):
         self.utils.loading_screen(self.canvas, "businfo_service_input.png", (0, 67, 1024, 640))
@@ -106,9 +108,12 @@ class ServiceHandler:
             self.getServiceInfo()[i].place_forget()
         self.utils.loading_screen(self.canvas, f"businfo_service_main{index}.png", (0, 67, 1024, 640))
         for i in range(len(self.services["stops"])):
-            self.stops_label[i].place(x=192, y=391 - 83*i)
+            self.stops_label[i].place(x=192, y=391 - 83 * i)
+        self.late_label.place(x=192, y=458 + 67 / 2 - 25)
+        self.late()
+        self.arrow.place(x=0, y=315)
 
-    def late(self, next_start):
+    def late(self, next_start=""):
         if self.screen == "recap":
             now = datetime.strptime(time.strftime("%H:%M:%S"), "%H:%M:%S")
             if now > datetime.strptime(next_start, "%H:%M:%S"):
@@ -122,12 +127,30 @@ class ServiceHandler:
                 time_late = "- " + "{:02d}:{:02d}:{:02d}".format(int(late // 3600), int(late % 3600 // 60),
                                                                  int(late % 60))
                 self.utils.loading_screen(self.canvas, "businfo_service_recap_a.png", (0, 67, 1024, 640))
-            self.late_label.config(text=next_start + "\t (" + str(time_late) + ")")
+            self.late_label.config(text=next_start + "\t (" + time_late + ")")
+            self.late_label.after(200, self.late, next_start)
+        elif self.screen == "main":
+            now = datetime.strptime(time.strftime("%H:%M:%S"), "%H:%M:%S")
+            if now > datetime.strptime(self.services["stops"]["0"]["horaire"], "%H:%M:%S"):
+                late = (now - datetime.strptime(self.services["stops"]["0"]["horaire"], "%H:%M:%S")).total_seconds()
+                time_late = "+ " + "{:02d}:{:02d}".format(int(late // 60), int(late % 60))
+                if int(late // 60) >= 2:
+                    self.image = ImageTk.PhotoImage(self.utils.load_image("fleches.png", (260, 0, 389, 200)))
+                    self.arrow.config(image=self.image)
+            else:
+                late = (datetime.strptime(self.services["stops"]["0"]["horaire"], "%H:%M:%S") - now).total_seconds()
+                time_late = "- " + "{:02d}:{:02d}".format(int(late // 60), int(late % 60))
+                if int(late // 60) > 3:
+                    self.image = ImageTk.PhotoImage(self.utils.load_image("fleches.png", (140, 0, 260, 200)))
+                    self.arrow.config(image=self.image)
+                elif 0 < int(late // 60) < 3:
+                    self.image = ImageTk.PhotoImage(self.utils.load_image("fleches.png", (389, 0, 518, 200)))
+                    self.arrow.config(image=self.image)
+            self.late_label.config(text=time_late)
             self.late_label.after(200, self.late, next_start)
 
-
     def getServiceInfo(self):
-        return [self.late_label, self.start_label, self.dest_label, self.stops_label]
+        return [self.late_label, self.start_label, self.dest_label, self.arrow, self.stops_label]
 
     def setScreen(self, screen):
         self.screen = screen

@@ -8,14 +8,19 @@ from businfo.definitions import ROOT_DIR
 
 class Utils:
     def __init__(self):
+        self.height = None
         self.load_photo = None
 
     def loading_screen(self, canvas: Canvas, filename="businfo_boot0.png", crop=None) -> None:
         back_img = canvas.create_image((0, 0), anchor=N + W)
+        self.load_photo = ImageTk.PhotoImage(self.load_image(filename, crop))
+        canvas.itemconfig(back_img, image=self.load_photo)
+        canvas.config(height=self.height)
+
+    def load_image(self, filename, crop=None):
         filename = os.path.join(ROOT_DIR, 'texture', filename)
         image = Image.open(filename)
         new_image = image.crop(crop)
-        width, height = new_image.size
-        self.load_photo = ImageTk.PhotoImage(new_image)
-        canvas.itemconfig(back_img, image=self.load_photo)
-        canvas.config(height=height)
+        width, self.height = new_image.size
+        return new_image
+

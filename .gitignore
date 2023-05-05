@@ -3,6 +3,7 @@ main.py
 pygame.py
 installer.ifp
 GUI.spec
+test.exe
 build/
 dist/
 venv

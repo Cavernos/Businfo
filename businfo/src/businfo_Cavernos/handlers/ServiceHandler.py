@@ -15,8 +15,8 @@ from businfo.definitions import font, ROOT_DIR
 class ServiceHandler:
     def __init__(self, canvas: Canvas, progress_bar: ProgressBar, info: Info, entry: Entry, digit_pad: DigitPad):
         self.screen = ""
-        file_handler = FileHandler(open(ROOT_DIR + "\\service.json"))
-        self.services = file_handler.decode()
+        self.file_handler = FileHandler("service.json")
+        self.services = self.file_handler.decode()
         self.active_service = False
         self.utils = Utils()
         self.canvas = canvas
@@ -89,65 +89,86 @@ class ServiceHandler:
         self.dest_label.place(x=17, y=178 + 67 / 2 - 25)
         self.start_label.place(x=17, y=315 + 67 / 2 - 25)
         self.late_label.place(x=17, y=458 + 67 / 2 - 25)
-        self.late(self.services["next_start"])
+        self.late()
 
     def main_page(self):
         self.screen = "main"
         match len(self.services["stops"]):
             case 1:
-                pass
+                self.load_main_page(1)
             case 2:
                 self.load_main_page(2)
             case 3:
-                pass
+                self.load_main_page(3)
             case _:
-                pass
+                self.load_main_page(4)
 
     def load_main_page(self, index):
         for i in range(0, 3):
             self.getServiceInfo()[i].place_forget()
         self.utils.loading_screen(self.canvas, f"businfo_service_main{index}.png", (0, 67, 1024, 640))
-        for i in range(len(self.services["stops"])):
+        if index == 4:
+            index = index - 1
+        for i in range(0, index):
             self.stops_label[i].place(x=192, y=391 - 83 * i)
         self.late_label.place(x=192, y=458 + 67 / 2 - 25)
         self.late()
         self.arrow.place(x=0, y=315)
 
-    def late(self, next_start=""):
+    def late(self):
+        if self.file_handler.file_update():
+            self.services = self.file_handler.decode()
+        now = datetime.strptime(time.strftime("%H:%M:%S"), "%H:%M:%S")
+        next_start = self.services["next_start"]
         if self.screen == "recap":
-            now = datetime.strptime(time.strftime("%H:%M:%S"), "%H:%M:%S")
+            late = (now - datetime.strptime(next_start, "%H:%M:%S")).total_seconds()
             if now > datetime.strptime(next_start, "%H:%M:%S"):
-                late = (now - datetime.strptime(next_start, "%H:%M:%S")).total_seconds()
                 time_late = "+ " + "{:02d}:{:02d}:{:02d}".format(int(late // 3600), int(late % 3600 // 60),
                                                                  int(late % 60))
                 self.utils.loading_screen(self.canvas, "businfo_service_recap_r.png", (0, 67, 1024, 640))
 
             else:
-                late = (datetime.strptime(next_start, "%H:%M:%S") - now).total_seconds()
-                time_late = "- " + "{:02d}:{:02d}:{:02d}".format(int(late // 3600), int(late % 3600 // 60),
-                                                                 int(late % 60))
+                advance = - late
+                time_late = "- " + "{:02d}:{:02d}:{:02d}".format(int(advance // 3600), int(advance % 3600 // 60),
+                                                                 int(advance % 60))
                 self.utils.loading_screen(self.canvas, "businfo_service_recap_a.png", (0, 67, 1024, 640))
             self.late_label.config(text=next_start + "\t (" + time_late + ")")
-            self.late_label.after(200, self.late, next_start)
+            self.late_label.after(200, self.late)
+
         elif self.screen == "main":
-            now = datetime.strptime(time.strftime("%H:%M:%S"), "%H:%M:%S")
             if now > datetime.strptime(self.services["stops"]["0"]["horaire"], "%H:%M:%S"):
                 late = (now - datetime.strptime(self.services["stops"]["0"]["horaire"], "%H:%M:%S")).total_seconds()
                 time_late = "+ " + "{:02d}:{:02d}".format(int(late // 60), int(late % 60))
                 if int(late // 60) >= 2:
                     self.image = ImageTk.PhotoImage(self.utils.load_image("fleches.png", (260, 0, 389, 200)))
                     self.arrow.config(image=self.image)
+                if len(self.services["stops"]) >= 3:
+                    self.utils.loading_screen(self.canvas,
+                                              f"businfo_service_main4_r.png",
+                                              (0, 67, 1024, 640))
+                else:
+                    self.utils.loading_screen(self.canvas,
+                                              f"businfo_service_main{len(self.services['stops'])}_r.png",
+                                              (0, 67, 1024, 640))
             else:
                 late = (datetime.strptime(self.services["stops"]["0"]["horaire"], "%H:%M:%S") - now).total_seconds()
                 time_late = "- " + "{:02d}:{:02d}".format(int(late // 60), int(late % 60))
-                if int(late // 60) > 3:
+                if int(late // 60) >= 3:
                     self.image = ImageTk.PhotoImage(self.utils.load_image("fleches.png", (140, 0, 260, 200)))
                     self.arrow.config(image=self.image)
                 elif 0 < int(late // 60) < 3:
                     self.image = ImageTk.PhotoImage(self.utils.load_image("fleches.png", (389, 0, 518, 200)))
                     self.arrow.config(image=self.image)
+                if len(self.services["stops"]) >= 3:
+                    self.utils.loading_screen(self.canvas,
+                                              f"businfo_service_main4_a.png",
+                                              (0, 67, 1024, 640))
+                else:
+                    self.utils.loading_screen(self.canvas,
+                                              f"businfo_service_main{len(self.services['stops'])}_a.png",
+                                              (0, 67, 1024, 640))
             self.late_label.config(text=time_late)
-            self.late_label.after(200, self.late, next_start)
+            self.late_label.after(200, self.late)
 
     def getServiceInfo(self):
         return [self.late_label, self.start_label, self.dest_label, self.arrow, self.stops_label]

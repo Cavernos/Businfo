@@ -102,7 +102,7 @@ class ButtonHandler:
             case 0:
                 if self.service_handler.active_service:
                     self.removeModeButtons()
-                    self.service_handler.recap()
+                    self.service_handler.main_page()
                 else:
                     self.screen_index = 1
                     self.removeModeButtons()
@@ -141,15 +141,19 @@ class ButtonHandler:
             self.service_handler.main_page()
 
     def return_push(self):
-        if self.login and self.screen_index == 1:
+        if self.login and self.screen_index == 1 or self.screen_index == 2:
             self.service_handler.setScreen("mod_chooser")
             self.entry.delete(0, END)
             self.entry.place_forget()
             service_info = self.service_handler.getServiceInfo()
             for i in range(0, 4):
                 service_info[i].place_forget()
-            for j in range(len(self.service_handler.services["stops"])):
-                service_info[4][j].place_forget()
+            if len(self.service_handler.services["stops"]) >= 3:
+                for j in range(0, 3):
+                    service_info[4][j].place_forget()
+            else:
+                for j in range(len(self.service_handler.services["stops"])):
+                    service_info[4][j].place_forget()
             self.mod_handler.generate("businfo_mode_select.png", (0, 67, 1024, 640))
 
     def assign_mod_action(self):

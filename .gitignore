@@ -1,9 +1,7 @@
 .idea
 main.py
 pygame.py
-installer.ifp
-GUI.spec
-test.exe
+Businfo_Cavernos_x64_setup.exe
 build/
 dist/
 venv

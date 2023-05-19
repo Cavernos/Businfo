@@ -4,20 +4,24 @@
 [![Build Status](https://github.com/ViaVersion/ViaVersion/actions/workflows/gradle.yml/badge.svg?branch=master)](https://github.com/ViaVersion/ViaVersion/actions)
 [![Discord](https://img.shields.io/badge/chat-on%20discord-blue.svg)](https://viaversion.com/discord)
 
-**Businfo system in python **
+**Businfo system in python**
 
 
 
 
 **Build Configuration on Windows:**
 ```shell
-python -m pip install -r requirements.txt
-pyinstaller businfo_windows.spec
+git clone https://github.com/Cavernos/Businfo.git \
+cd Businfo \
+python -m pip install -r requirements.txt \
+pyinstaller businfo_windows.spec \
 .\dist\Businfo_windows\Businfo.exe
 ```
 
 **Build Configuration on Linux:**
 ```shell
+git clone https://github.com/Cavernos/Businfo.git \
+cd Businfo \
 python -m pip install -r requirements.txt
 pyinstaller businfo_linux.spec
 ./dist/Businfo_linux/Businfo.sh

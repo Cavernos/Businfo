@@ -9,7 +9,7 @@ added_files = [('businfo/texture', 'businfo/texture'),
 
 a = Analysis(
     ['businfo/src/businfo_Cavernos/GUI.py'],
-    pathex=["/mnt/f/Documents/Mod Omsi 2/plugins/businfo/python/businfo/src/businfo_Cavernos", "/mnt/f/Documents/Mod Omsi 2/plugins/businfo/python"],
+    pathex=["./businfo/src/businfo_Cavernos", "./plugins/businfo/python"],
     binaries=[],
     datas=added_files,
     hiddenimports=['PIL', 'PIL._imagingtk', 'PIL._tkinter_finder'],

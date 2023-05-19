@@ -10,7 +10,7 @@ added_files = [('.\\businfo\\texture', 'businfo\\texture'),
 
 a = Analysis(
     ['businfo\\src\\businfo_Cavernos\\GUI.py'],
-    pathex=["F:\\Documents\\Mod Omsi 2\\plugins\\businfo\\python\\businfo\\src\\businfo_Cavernos", "F:\\Documents\\Mod Omsi 2\\plugins\\businfo\\python"],
+    pathex=[".\\businfo\\src\\businfo_Cavernos", ".\\"],
     binaries=[],
     datas=added_files,
     hiddenimports=[],

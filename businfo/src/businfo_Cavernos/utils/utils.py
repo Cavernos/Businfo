@@ -3,7 +3,7 @@ from tkinter import Canvas, N, W
 
 from PIL import Image, ImageTk
 
-from businfo.definitions import ROOT_DIR
+from businfo.definitions import ROOT_DIR, width as root_w, height as root_h
 
 
 class Utils:
@@ -22,5 +22,5 @@ class Utils:
         image = Image.open(filename)
         new_image = image.crop(crop)
         width, self.height = new_image.size
-        return new_image
+        return new_image.resize((root_w * width // 1024, root_h * self.height // 640))
 

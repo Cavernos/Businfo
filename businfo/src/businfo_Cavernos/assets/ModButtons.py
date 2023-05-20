@@ -3,7 +3,7 @@ from tkinter import Frame, Button, Canvas
 
 from PIL import Image, ImageTk
 
-from businfo.definitions import ROOT_DIR
+from businfo.definitions import ROOT_DIR, width, height
 
 
 class ModButtons:
@@ -18,7 +18,7 @@ class ModButtons:
     def place(self):
         self.mod_frame.place(x=self.x, y=self.y)
         for i in range(0, 3):
-            self.buttons[i].place(x=-5, y=(self.height / 3) * i)
+            self.buttons[i].place(x=-width * 5 // 1024, y=height * ((self.height / 3) * i) // 640)
 
     def addButtons(self):
         for i in range(0, 3):
@@ -26,8 +26,8 @@ class ModButtons:
             self.image.append(ImageTk.PhotoImage(image))
             self.buttons.append(Button(self.mod_frame,
                                        image=self.image[i],
-                                       width=540,
-                                       height=self.height / 3 - 5,
+                                       width=width * 135 // 256,
+                                       height=height * (self.height / 3 - 5) //640,
                                        relief="sunken",
                                        cursor="hand2",
                                        border=0

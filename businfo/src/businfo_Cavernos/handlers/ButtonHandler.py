@@ -12,6 +12,8 @@ from businfo.src.businfo_Cavernos.utils.utils import Utils
 
 from businfo.src.businfo_Cavernos.assets.Info import Info
 
+from businfo.definitions import width, height
+
 
 class ButtonHandler:
     def __init__(self, digit_pad: DigitPad, entry: Entry, info: Info, canvas: Canvas, screen_index: int):
@@ -25,9 +27,17 @@ class ButtonHandler:
         self.mod_buttons = None
         self.mod_handler = ModHandler(self.canvas, digit_pad)
         self.entry = entry
-        self.progress_bar = ProgressBar(self.canvas, length=327)
-        self.escape_button = EscapeButton(self.canvas, border=0, width=194, height=94, x=823, y=470)
-        self.menu_return_button = MenuReturnButton(self.canvas, border=0, width=90, height=60, x=715, y=506)
+        self.progress_bar = ProgressBar(self.canvas, length=width * 327 // 1024)
+        self.escape_button = EscapeButton(self.canvas, border=0, 
+                                          width=width * 97 // 512, 
+                                          height=height * 47 // 320, 
+                                          x=width * 823 // 1024, 
+                                          y=height * 47 // 64)
+        self.menu_return_button = MenuReturnButton(self.canvas, border=0, 
+                                                   width=width * 45 // 512, 
+                                                   height=height * 3 // 32, 
+                                                   x=width * 715 // 1024, 
+                                                   y=height * 253 // 320)
         self.login = Login(self.entry,
                            self.progress_bar,
                            self.canvas,
@@ -131,9 +141,9 @@ class ButtonHandler:
         self.digit_pad.place()
 
     def special_dest(self):
-        self.utils.loading_screen(self.canvas, "businfo_LK_input.png", (0, 67, 1024, 640))
+        self.utils.loading_screen(self.canvas, "businfo_LK_input.png", (0, height * 67 // 640, width, height))
         self.digit_pad.place()
-        self.entry.place(x=17, y=220)
+        self.entry.place(x=17 * width // 1024, y=height * 11 // 32)
 
     def esc_push(self):
         if self.service_handler.active_service:
@@ -154,7 +164,7 @@ class ButtonHandler:
             else:
                 for j in range(len(self.service_handler.services["stops"])):
                     service_info[4][j].place_forget()
-            self.mod_handler.generate("businfo_mode_select.png", (0, 67, 1024, 640))
+            self.mod_handler.generate("businfo_mode_select.png", (0, height * 67 // 640, width, height))
 
     def assign_mod_action(self):
         if self.login.is_login:

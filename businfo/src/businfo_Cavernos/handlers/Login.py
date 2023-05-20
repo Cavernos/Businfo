@@ -7,6 +7,7 @@ from businfo.src.businfo_Cavernos.assets.MenuReturnButton import MenuReturnButto
 from businfo.src.businfo_Cavernos.assets.ProgressBar import ProgressBar
 from businfo.src.businfo_Cavernos.handlers.ModHandler import ModHandler
 from businfo.src.businfo_Cavernos.utils.utils import Utils
+from businfo.definitions import width, height
 
 
 class Login:
@@ -31,8 +32,8 @@ class Login:
         text = self.entry.get()[0:6]
         self.entry.place_forget()
         self.entry.delete(0, END)
-        self.utils.loading_screen(self.canvas, "businfo_ID_loading.png", (0, 67, 1024, 640))
-        self.progress_bar.getBar().place(x=20, y=190)
+        self.utils.loading_screen(self.canvas, "businfo_ID_loading.png", (0, height * 67 // 640, width, height))
+        self.progress_bar.getBar().place(x=width * 5 // 256, y=height * 19 // 64)
         self.progress_bar.progress_start()
         if text == "229":
             logging.info("Logged In")
@@ -40,19 +41,19 @@ class Login:
             self.canvas.after(1000, self.valid_id)
         else:
             self.progress_bar.getBar().place_forget()
-            self.utils.loading_screen(self.canvas, "businfo_ID_loading_error_WID.png", (0, 67, 1024, 640))
+            self.utils.loading_screen(self.canvas, "businfo_ID_loading_error_WID.png", (0, height * 67 // 640, width, height))
             self.canvas.after(2000, self.invalid_id)
             logging.info("Logging Failure")
 
     def invalid_id(self):
-        self.utils.loading_screen(self.canvas, "businfo_ID_input.png", (0, 67, 1024, 640))
+        self.utils.loading_screen(self.canvas, "businfo_ID_input.png", (0, height * 67 // 640, width, height))
         self.info.getDriverLabel().config(text="Cn:000000")
-        self.entry.place(x=17, y=220)
+        self.entry.place(x=17 * width // 1024, y=height * 11 // 32)
         self.is_login = False
 
     def valid_id(self):
         self.progress_bar.getBar().place_forget()
-        self.mod_handler.generate("businfo_mode_select.png", (0, 67, 1024, 640))
+        self.mod_handler.generate("businfo_mode_select.png", (0, height * 67 // 640, width, height))
         self.escape_button.place()
         self.menu_return_button.place()
         self.is_login = True

@@ -2,7 +2,7 @@ import os
 from tkinter import Frame, Button, SUNKEN
 
 from PIL import ImageTk, Image
-from businfo.definitions import ROOT_DIR
+from businfo.definitions import ROOT_DIR, width as root_w, height as root_h
 
 
 class DigitPad:
@@ -17,8 +17,8 @@ class DigitPad:
         for j in range(0, 4):
             for i in range(0, 3):
                 button_index = i + 3 * j
-                self.button_width[button_index] = 87 if i == 0 else 88
-                self.button_height[button_index] = 72 if j == 3 else 73
+                self.button_width[button_index] = root_w * 87 // 1024 if i == 0 else root_w * 11 // 128
+                self.button_height[button_index] = root_h * 9 // 80 if j == 3 else root_h * 73 // 640
 
     def place(self):
         self.digit_frame.place(x=self.x, y=self.y)
@@ -27,8 +27,8 @@ class DigitPad:
                 button_index = i + 3 * j
                 x = 0 if i == 0 else i * self.button_width[button_index - 1] + 10 * i
                 y = 0 if j == 0 else j * self.button_height[button_index - 3] + 10 * j
-                self.buttons[button_index].place(x=x, y=y)
-        self.buttons[12].place(x=196, y=379)
+                self.buttons[button_index].place(x=root_w * x // 1024, y=root_h * y // 640)
+        self.buttons[12].place(x=root_w * 49 // 256, y=root_h * 379 // 640)
 
     def addButtons(self):
         for i in range(0, 13):

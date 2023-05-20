@@ -9,7 +9,7 @@ from businfo.src.businfo_Cavernos.assets.Info import Info
 from businfo.src.businfo_Cavernos.assets.ProgressBar import ProgressBar
 from businfo.src.businfo_Cavernos.handlers.FileHandler import FileHandler
 from businfo.src.businfo_Cavernos.utils.utils import Utils
-from businfo.definitions import font, ROOT_DIR
+from businfo.definitions import font, ROOT_DIR, width, height
 
 
 class ServiceHandler:
@@ -38,24 +38,22 @@ class ServiceHandler:
         self.arrow = Label(self.canvas, font=font, fg="white", bg="#3A393A")
 
     def service(self):
-        self.utils.loading_screen(self.canvas, "businfo_service_input.png", (0, 67, 1024, 640))
+        self.utils.loading_screen(self.canvas, "businfo_service_input.png", (0, height * 67 // 640, width, height))
         self.digit_pad.place()
-        self.entry.place(x=17, y=220)
+        self.entry.place(x=17 * width // 1024, y=height * 11 // 32)
 
     def service_search(self, service_int):
-        self.utils.loading_screen(self.canvas, "businfo_service_loading.png", (0, 67, 1024, 640))
-        self.progress_bar.getBar().place(x=20, y=190)
+        self.utils.loading_screen(self.canvas, "businfo_service_loading.png", (0, height * 67 // 640, width, height))
+        self.progress_bar.getBar().place(x=width * 5 // 256, y=height * 19 // 64)
         self.progress_bar.progress_start()
-        if int(service_int) == self.services["number"]:
-            gprs = True
-        else:
-            gprs = False
+        gprs = self.services["GPRS"]
+        self.services["number"] = int(service_int)
         if gprs:
             self.progress_bar.getBar().place_forget()
             self.service_found(self.services)
         else:
             self.progress_bar.getBar().place_forget()
-            self.utils.loading_screen(self.canvas, "businfo_service_loading_error_gprs.png", (0, 67, 1024, 640))
+            self.utils.loading_screen(self.canvas, "businfo_service_loading_error_gprs.png", (0, height * 67 // 640, width, height))
             self.canvas.after(2000, self.service_not_found)
 
     def service_found(self, services: dict):
@@ -74,11 +72,11 @@ class ServiceHandler:
         self.recap()
 
     def service_not_found(self):
-        self.utils.loading_screen(self.canvas, "businfo_service_input.png", (0, 67, 1024, 640))
+        self.utils.loading_screen(self.canvas, "businfo_service_input.png", (0, height * 67 // 640, width, height))
         self.info.getServiceLabel().config(text="S:000000")
         self.info.getLineLabel().config(text="L:0000")
         self.info.getDestinationLabel().config(text="D:000")
-        self.entry.place(x=17, y=220)
+        self.entry.place(17 * width // 1024, y=height * 11 // 32)
 
     def recap(self):
         self.screen = "recap"
@@ -86,9 +84,9 @@ class ServiceHandler:
         self.entry.delete(0, END)
         self.digit_pad.removeDigitPad()
         self.digit_pad.removeButtons()
-        self.dest_label.place(x=17, y=178 + 67 / 2 - 25)
-        self.start_label.place(x=17, y=315 + 67 / 2 - 25)
-        self.late_label.place(x=17, y=458 + 67 / 2 - 25)
+        self.dest_label.place(x=17 * width // 1024, y=height * 373 // 1280)
+        self.start_label.place(x=17 * width // 1024, y=height * 647  // 1280)
+        self.late_label.place(x=17 * width // 1024, y=height * 933  // 1280)
         self.late()
 
     def main_page(self):
@@ -97,9 +95,9 @@ class ServiceHandler:
             self.getServiceInfo()[i].place_forget()
         self.display_screen()
         self.service_screen_updater()
-        self.late_label.place(x=192, y=458 + 67 / 2 - 25)
+        self.late_label.place(x=width * 3 // 16,  y=height * 933  // 1280)
         self.late()
-        self.arrow.place(x=0, y=315)
+        self.arrow.place(x=0, y=height * 63 // 128)
 
     def service_screen_updater(self):
         if self.file_handler.file_update():
@@ -112,11 +110,11 @@ class ServiceHandler:
         last_stop = self.services["next_stop"] + 2 if self.services["next_stop"] + 2 <= self.services["max_stop"] else \
             self.services["max_stop"]
         self.utils.loading_screen(self.canvas, f"businfo_service_main{last_stop - first_stop + 1}.png",
-                                  (0, 67, 1024, 640))
+                                 (0, height * 67 // 640, width, height))
         for i in range(0, self.services["max_stop"]+1):
             self.stops_label[i].place_forget()
         for i in range(first_stop, last_stop+1):
-            self.stops_label[i].place(x=192, y=391 - 83 * (i - first_stop))
+            self.stops_label[i].place(x=width * 3 // 16, y=height * (391 - 83 * (i - first_stop)) // 640)
 
     def late(self):
         first_stop = self.services["next_stop"]
@@ -129,13 +127,13 @@ class ServiceHandler:
             if now > datetime.strptime(next_start, "%H:%M:%S"):
                 time_late = "+ " + "{:02d}:{:02d}:{:02d}".format(int(late // 3600), int(late % 3600 // 60),
                                                                  int(late % 60))
-                self.utils.loading_screen(self.canvas, "businfo_service_recap_r.png", (0, 67, 1024, 640))
+                self.utils.loading_screen(self.canvas, "businfo_service_recap_r.png", (0, height * 67 // 640, width, height))
 
             else:
                 advance = - late
                 time_late = "- " + "{:02d}:{:02d}:{:02d}".format(int(advance // 3600), int(advance % 3600 // 60),
                                                                  int(advance % 60))
-                self.utils.loading_screen(self.canvas, "businfo_service_recap_a.png", (0, 67, 1024, 640))
+                self.utils.loading_screen(self.canvas, "businfo_service_recap_a.png", (0, height * 67 // 640, width, height))
             self.late_label.config(text=next_start + "\t (" + time_late + ")")
             self.late_label.after(200, self.late)
 
@@ -145,24 +143,24 @@ class ServiceHandler:
                                                 "%H:%M:%S")).total_seconds()
                 time_late = "+ " + "{:02d}:{:02d}".format(int(late // 60), int(late % 60))
                 if int(late // 60) >= 2:
-                    self.image = ImageTk.PhotoImage(self.utils.load_image("fleches.png", (260, 0, 389, 200)))
+                    self.image = ImageTk.PhotoImage(self.utils.load_image("fleches.png", (width * 65 // 256, 0, width * 389 // 1024, height*5 // 16)))
                     self.arrow.config(image=self.image)
                 self.utils.loading_screen(self.canvas,
                                     f"businfo_service_main{last_stop - first_stop + 1}_r.png",
-                                    (0, 67, 1024, 640))
+                                    (0, height * 67 // 640, width, height))
             else:
                 late = (datetime.strptime(self.services["stops"][str(self.services["next_stop"])]["horaire"],
                                           "%H:%M:%S") - now).total_seconds()
                 time_late = "- " + "{:02d}:{:02d}".format(int(late // 60), int(late % 60))
                 if int(late // 60) >= 3:
-                    self.image = ImageTk.PhotoImage(self.utils.load_image("fleches.png", (140, 0, 260, 200)))
+                    self.image = ImageTk.PhotoImage(self.utils.load_image("fleches.png", (width * 35 // 256, 0, width * 65 // 256, height*5 // 16)))
                     self.arrow.config(image=self.image)
                 elif 0 < int(late // 60) < 3:
-                    self.image = ImageTk.PhotoImage(self.utils.load_image("fleches.png", (389, 0, 518, 200)))
+                    self.image = ImageTk.PhotoImage(self.utils.load_image("fleches.png", (width * 389 // 1024, 0, width * 259 // 512, height*5 // 16)))
                     self.arrow.config(image=self.image)
                 self.utils.loading_screen(self.canvas,
                                           f"businfo_service_main{last_stop - first_stop + 1}_a.png",
-                                          (0, 67, 1024, 640))
+                                          (0, height * 67 // 640, width, height))
 
             self.late_label.config(text=time_late)
             self.late_label.after(200, self.late)

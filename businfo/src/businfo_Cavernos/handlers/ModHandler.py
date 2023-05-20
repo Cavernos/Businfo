@@ -3,6 +3,7 @@ from tkinter import Canvas
 from businfo.src.businfo_Cavernos.assets.DigitPad import DigitPad
 from businfo.src.businfo_Cavernos.assets.ModButtons import ModButtons
 from businfo.src.businfo_Cavernos.utils.utils import Utils
+from businfo.definitions import width, height
 
 
 class ModHandler:
@@ -10,7 +11,11 @@ class ModHandler:
         self.utils = Utils()
         self.canvas = canvas
         self.digit_frame = digit_frame
-        self.ModButtons = ModButtons(self.canvas, border=0, bg="#3A393A", width=535, height=210, x=73, y=139)
+        self.ModButtons = ModButtons(self.canvas, border=0, bg="#3A393A", 
+                                     width=width * 535 // 1024, 
+                                     height=height * 21 // 64, 
+                                     x=width * 73 // 1024, 
+                                     y= height * 139 // 640)
 
     def generate(self, filename, crop):
         self.digit_frame.removeDigitPad()

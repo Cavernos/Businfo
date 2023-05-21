@@ -40,7 +40,9 @@ class DigitPad:
                                        height=self.button_height[i],
                                        relief=SUNKEN,
                                        cursor="hand2",
-                                       border=0
+                                       border=0,
+                                       borderwidth=0,
+                                       highlightthickness=0
                                        ))
 
     def getButtons(self):

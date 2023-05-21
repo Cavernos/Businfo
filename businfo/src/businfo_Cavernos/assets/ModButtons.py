@@ -27,10 +27,12 @@ class ModButtons:
             self.buttons.append(Button(self.mod_frame,
                                        image=self.image[i],
                                        width=width * 135 // 256,
-                                       height=height * (self.height / 3 - 5) //640,
+                                       height=height * (self.height / 3 - 5) // 640,
                                        relief="sunken",
                                        cursor="hand2",
-                                       border=0
+                                       border=0,
+                                       borderwidth=0,
+                                       highlightthickness=0
                                        ))
 
     def getButtons(self):

@@ -1,11 +1,14 @@
 import time
-from tkinter.ttk import Progressbar
+from tkinter.ttk import Progressbar,Style
 
 
 class ProgressBar:
     def __init__(self, canvas, length):
         self.canvas = canvas
-        self.progress_bar = Progressbar(canvas, length=length)
+        s = Style()
+        s.theme_use("default")
+        s.configure("Horizontal.TProgressbar", foreground="#312D8C", background="#312D8C")
+        self.progress_bar = Progressbar(canvas, length=length, style='Horizontal.TProgressbar')
 
     def getBar(self):
         return self.progress_bar

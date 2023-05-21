@@ -30,10 +30,18 @@ class Info:
     def place(self):
         self.info.grid(row=0)
         self.clock_label.place(x=root_w * 5 // 1024, y=root_h * 5 // 640)
-        self.driver_label.place(x=5 * self.width / 8 - 60, y=root_h // 64)
-        self.service_label.place(x=5 * self.width / 8 + 80, y=root_h // 64)
-        self.destination_label.place(x=5 * self.width / 8 + 205, y=root_h // 64)
-        self.line_label.place(x=5 * self.width / 8 + 285, y=root_h // 64)
+        label_width = [self.driver_label.winfo_reqwidth(),
+                       self.service_label.winfo_reqwidth(),
+                       self.destination_label.winfo_reqwidth(),
+                       self.line_label.winfo_reqwidth()]
+        self.driver_label.place(
+            x=root_w - label_width[0] - label_width[1] - label_width[2] - label_width[3] - 20, y=root_h // 64)
+        self.service_label.place(
+            x=root_w - label_width[1] - label_width[2] - label_width[3] - 15, y=root_h // 64)
+        self.destination_label.place(
+            x=root_w - label_width[2] - label_width[3] - 10, y=root_h // 64)
+        self.line_label.place(
+            x=root_w - label_width[3] - 5, y=root_h // 64)
 
     def getDriverLabel(self):
         return self.driver_label

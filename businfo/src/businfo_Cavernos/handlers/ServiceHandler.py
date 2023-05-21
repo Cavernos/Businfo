@@ -53,7 +53,8 @@ class ServiceHandler:
             self.service_found(self.services)
         else:
             self.progress_bar.getBar().place_forget()
-            self.utils.loading_screen(self.canvas, "businfo_service_loading_error_gprs.png", (0, height * 67 // 640, width, height))
+            self.utils.loading_screen(self.canvas, "businfo_service_loading_error_gprs.png",
+                                      (0, height * 67 // 640, width, height))
             self.canvas.after(2000, self.service_not_found)
 
     def service_found(self, services: dict):
@@ -85,8 +86,8 @@ class ServiceHandler:
         self.digit_pad.removeDigitPad()
         self.digit_pad.removeButtons()
         self.dest_label.place(x=17 * width // 1024, y=height * 373 // 1280)
-        self.start_label.place(x=17 * width // 1024, y=height * 647  // 1280)
-        self.late_label.place(x=17 * width // 1024, y=height * 933  // 1280)
+        self.start_label.place(x=17 * width // 1024, y=height * 647 // 1280)
+        self.late_label.place(x=17 * width // 1024, y=height * 933 // 1280)
         self.late()
 
     def main_page(self):
@@ -95,7 +96,7 @@ class ServiceHandler:
             self.getServiceInfo()[i].place_forget()
         self.display_screen()
         self.service_screen_updater()
-        self.late_label.place(x=width * 3 // 16,  y=height * 933  // 1280)
+        self.late_label.place(x=width * 3 // 16, y=height * 933 // 1280)
         self.late()
         self.arrow.place(x=0, y=height * 63 // 128)
 
@@ -110,16 +111,16 @@ class ServiceHandler:
         last_stop = self.services["next_stop"] + 2 if self.services["next_stop"] + 2 <= self.services["max_stop"] else \
             self.services["max_stop"]
         self.utils.loading_screen(self.canvas, f"businfo_service_main{last_stop - first_stop + 1}.png",
-                                 (0, height * 67 // 640, width, height))
-        for i in range(0, self.services["max_stop"]+1):
+                                  (0, height * 67 // 640, width, height))
+        for i in range(0, self.services["max_stop"] + 1):
             self.stops_label[i].place_forget()
-        for i in range(first_stop, last_stop+1):
+        for i in range(first_stop, last_stop + 1):
             self.stops_label[i].place(x=width * 3 // 16, y=height * (391 - 83 * (i - first_stop)) // 640)
 
     def late(self):
         first_stop = self.services["next_stop"]
         last_stop = self.services["next_stop"] + 2 if self.services["next_stop"] + 2 <= self.services["max_stop"] else \
-                    self.services["max_stop"]
+            self.services["max_stop"]
         now = datetime.strptime(time.strftime("%H:%M:%S"), "%H:%M:%S")
         next_start = self.services["next_start"]
         if self.screen == "recap":
@@ -127,13 +128,15 @@ class ServiceHandler:
             if now > datetime.strptime(next_start, "%H:%M:%S"):
                 time_late = "+ " + "{:02d}:{:02d}:{:02d}".format(int(late // 3600), int(late % 3600 // 60),
                                                                  int(late % 60))
-                self.utils.loading_screen(self.canvas, "businfo_service_recap_r.png", (0, height * 67 // 640, width, height))
+                self.utils.loading_screen(self.canvas, "businfo_service_recap_r.png",
+                                          (0, height * 67 // 640, width, height))
 
             else:
                 advance = - late
                 time_late = "- " + "{:02d}:{:02d}:{:02d}".format(int(advance // 3600), int(advance % 3600 // 60),
                                                                  int(advance % 60))
-                self.utils.loading_screen(self.canvas, "businfo_service_recap_a.png", (0, height * 67 // 640, width, height))
+                self.utils.loading_screen(self.canvas, "businfo_service_recap_a.png",
+                                          (0, height * 67 // 640, width, height))
             self.late_label.config(text=next_start + "\t (" + time_late + ")")
             self.late_label.after(200, self.late)
 
@@ -143,20 +146,23 @@ class ServiceHandler:
                                                 "%H:%M:%S")).total_seconds()
                 time_late = "+ " + "{:02d}:{:02d}".format(int(late // 60), int(late % 60))
                 if int(late // 60) >= 2:
-                    self.image = ImageTk.PhotoImage(self.utils.load_image("fleches.png", (width * 65 // 256, 0, width * 389 // 1024, height*5 // 16)))
+                    self.image = ImageTk.PhotoImage(self.utils.load_image("fleches.png", (
+                    width * 65 // 256, 0, width * 389 // 1024, height * 5 // 16)))
                     self.arrow.config(image=self.image)
                 self.utils.loading_screen(self.canvas,
-                                    f"businfo_service_main{last_stop - first_stop + 1}_r.png",
-                                    (0, height * 67 // 640, width, height))
+                                          f"businfo_service_main{last_stop - first_stop + 1}_r.png",
+                                          (0, height * 67 // 640, width, height))
             else:
                 late = (datetime.strptime(self.services["stops"][str(self.services["next_stop"])]["horaire"],
                                           "%H:%M:%S") - now).total_seconds()
                 time_late = "- " + "{:02d}:{:02d}".format(int(late // 60), int(late % 60))
                 if int(late // 60) >= 3:
-                    self.image = ImageTk.PhotoImage(self.utils.load_image("fleches.png", (width * 35 // 256, 0, width * 65 // 256, height*5 // 16)))
+                    self.image = ImageTk.PhotoImage(self.utils.load_image("fleches.png", (
+                    width * 35 // 256, 0, width * 65 // 256, height * 5 // 16)))
                     self.arrow.config(image=self.image)
                 elif 0 < int(late // 60) < 3:
-                    self.image = ImageTk.PhotoImage(self.utils.load_image("fleches.png", (width * 389 // 1024, 0, width * 259 // 512, height*5 // 16)))
+                    self.image = ImageTk.PhotoImage(self.utils.load_image("fleches.png", (
+                    width * 389 // 1024, 0, width * 259 // 512, height * 5 // 16)))
                     self.arrow.config(image=self.image)
                 self.utils.loading_screen(self.canvas,
                                           f"businfo_service_main{last_stop - first_stop + 1}_a.png",

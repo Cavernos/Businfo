@@ -2,18 +2,18 @@
   "GPRS": 1,
   "line": 20,
   "ziel": 200,
-  "start": "Congress \t  \t Ibk",
-  "dest": "Hungerburg \t \t Ibk",
+  "start": "Congress \t  Ibk",
+  "dest": "Hungerburg \t Ibk",
   "next_start": "19:15:00",
   "next_stop": 0,
   "max_stop": 9,
   "stops": {
     "0": {
-      "name": "Congress \t  \t Ibk",
+      "name": "Congress \t   Ibk",
       "horaire": "19:15:00"
     },
     "1": {
-      "name": "Hungerburg \t \t Ibk",
+      "name": "Hungerburg \t  Ibk",
       "horaire": "19:25:00"
     },
     "2": {

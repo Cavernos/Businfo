@@ -20,6 +20,7 @@ class GUI(object):
         self.root.title("businfo")
         self.root.resizable(True, True)
         self.root.update_idletasks()
+        self.root.update()
         logging.info("Window Init Successfully")
 
         # Some Definition
@@ -39,12 +40,13 @@ class GUI(object):
         # Infos Frame
         self.service_label = Label(self.main_frame, font=font, fg="white", bg="#3A393A", text="Pas de service en "
                                                                                                    "charge")
-        self.info = Info(self.root, border=0, bg=self.bg_color, width=width, height=height * 67 // 640, service_label=self.service_label)
+        self.info = Info(self.root,
+                         border=0,
+                         bg=self.bg_color,
+                         width=width,
+                         height=height * 67 // 640,
+                         service_label=self.service_label)
         self.info.clock()
-
-        # Service Info
-
-
         # Digits Frame
         self.digit_frame = DigitPad(self.main_frame, 
                                     border=0, 
@@ -61,11 +63,15 @@ class GUI(object):
                                  font=font,
                                  bg="#313131",
                                  border=0,
-                                 insertbackground="white",
                                  fg="white",
-                                 width=6
+                                 insertbackground="white",
+                                 width=6,
+                                 relief="sunken",
+                                 highlightthickness=0,
+                                 validate="none"
                                  )
         self.input_entry.bind("<Key>", lambda e: "break")
+        self.input_entry.bind("<KeyPress>", lambda e: "break")
 
         # Screen Configuration
         self.utils.loading_screen(self.canvas)

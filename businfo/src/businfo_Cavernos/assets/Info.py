@@ -1,6 +1,7 @@
 import time
 from tkinter import Frame, Label, Tk
 from businfo.definitions import width as root_w, height as root_h
+from businfo.src.businfo_Cavernos.handlers.FileHandler import FileHandler
 
 
 class Info:
@@ -9,6 +10,9 @@ class Info:
         self.font = ['US_MSFont_Faremaster', root_h * 5 // 128]
         self.bg_color = "#312D8C"
         self.width = root_w
+
+        self.file_handler = FileHandler("service.json")
+        self.services = self.file_handler.decode()
 
         self.clock_label = Label(self.info, font=self.font, fg="white", bg=self.bg_color)
         self.font[1] = root_h // 32
@@ -23,8 +27,10 @@ class Info:
         return self.info
 
     def clock(self) -> None:
-        time_live = time.strftime("%H:%M:%S")
-        self.clock_label.config(text=time_live)
+        if self.file_handler.file_update():
+            self.services = self.file_handler.decode()
+            time_live = self.services["game_time"]
+            self.clock_label.config(text=time_live)
         self.clock_label.after(200, self.clock)
 
     def place(self):

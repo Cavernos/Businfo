@@ -1,5 +1,5 @@
 import time
-from tkinter.ttk import Progressbar,Style
+from tkinter.ttk import Progressbar, Style
 
 
 class ProgressBar:

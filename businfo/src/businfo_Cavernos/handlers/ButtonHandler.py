@@ -28,15 +28,15 @@ class ButtonHandler:
         self.mod_handler = ModHandler(self.canvas, digit_pad)
         self.entry = entry
         self.progress_bar = ProgressBar(self.canvas, length=width * 327 // 1024)
-        self.escape_button = EscapeButton(self.canvas, border=0, 
-                                          width=width * 97 // 512, 
-                                          height=height * 47 // 320, 
-                                          x=width * 823 // 1024, 
+        self.escape_button = EscapeButton(self.canvas, border=0,
+                                          width=width * 97 // 512,
+                                          height=height * 47 // 320,
+                                          x=width * 823 // 1024,
                                           y=height * 47 // 64)
-        self.menu_return_button = MenuReturnButton(self.canvas, border=0, 
-                                                   width=width * 45 // 512, 
-                                                   height=height * 3 // 32, 
-                                                   x=width * 715 // 1024, 
+        self.menu_return_button = MenuReturnButton(self.canvas, border=0,
+                                                   width=width * 45 // 512,
+                                                   height=height * 3 // 32,
+                                                   x=width * 715 // 1024,
                                                    y=height * 253 // 320)
         self.login = Login(self.entry,
                            self.progress_bar,
@@ -158,11 +158,12 @@ class ButtonHandler:
             service_info = self.service_handler.getServiceInfo()
             for i in range(0, 4):
                 service_info[i].place_forget()
+            print(len(self.service_handler.services["stops"]))
             if len(self.service_handler.services["stops"]) >= 3:
                 for j in range(0, 3):
                     service_info[4][j].place_forget()
             else:
-                for j in range(len(self.service_handler.services["stops"])):
+                for j in range(0, len(self.service_handler.services["stops"]) + 1):
                     service_info[4][j].place_forget()
             self.mod_handler.generate("businfo_mode_select.png", (0, height * 67 // 640, width, height))
 
@@ -178,5 +179,3 @@ class ButtonHandler:
         self.mod_handler.getModButtons().mod_frame.place_forget()
         for i in range(0, 3):
             self.mod_buttons[i].place_forget()
-
-

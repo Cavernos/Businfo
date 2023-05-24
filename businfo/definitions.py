@@ -3,3 +3,58 @@ import os
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 width, height  = 1024, 640
 font = ['US_MSFont_Faremaster', height * 5 // 128, "italic"]
+template = {
+  "GPRS": 1,
+  "line": 20,
+  "ziel": 200,
+  "start": "Congress \t  Ibk",
+  "dest": "Hungerburg \t Ibk",
+  "next_start": "19:15:00",
+  "next_stop": 0,
+  "max_stop": 9,
+  "tt_delay": "-39:02",
+  "game_time": "21:05:58",
+  "stops": {
+    "0": {
+      "name": "Congress \t   Ibk",
+      "horaire": "19:15:00"
+    },
+    "1": {
+      "name": "Hungerburg \t  Ibk",
+      "horaire": "19:25:00"
+    },
+    "2": {
+      "name": "2",
+      "horaire": "19:35:00"
+    },
+    "3": {
+      "name": "3",
+      "horaire": "19:45:00"
+    },
+    "4": {
+      "name": "4",
+      "horaire": "20:25:00"
+    },
+    "5": {
+      "name": "5",
+      "horaire": "21:25:00"
+    },
+    "6": {
+      "name": "6",
+      "horaire": "15:25:00"
+    },
+    "7": {
+      "name": "7",
+      "horaire": "19:25:00"
+    },
+    "8": {
+      "name": "8",
+      "horaire": "19:25:00"
+    },
+    "9": {
+      "name": "9",
+      "horaire": "19:25:00"
+    }
+  }
+}
+

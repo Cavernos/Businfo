@@ -1,52 +1,41 @@
 {
   "GPRS": 1,
-  "line": 20,
-  "ziel": 200,
-  "start": "Congress \t  Ibk",
-  "dest": "Hungerburg \t Ibk",
-  "next_start": "19:15:00",
-  "next_stop": 0,
-  "max_stop": 9,
+  "dest": "Bauernhof",
+  "game_time": "22:10:32",
+  "line": 76,
+  "max_stop": 7,
+  "next_start": "22:37:00",
+  "next_stop": 6,
+  "start": "Krankenhaus",
   "stops": {
     "0": {
-      "name": "Congress \t   Ibk",
-      "horaire": "19:15:00"
+      "name": "Krankenhaus"
     },
     "1": {
-      "name": "Hungerburg \t  Ibk",
-      "horaire": "19:25:00"
+      "name": "Krankenhaus"
     },
     "2": {
-      "name": "2",
-      "horaire": "19:35:00"
+      "name": "Einsteindorf Ausbau"
     },
     "3": {
-      "name": "3",
-      "horaire": "19:45:00"
+      "name": "Gaussdorf"
     },
     "4": {
-      "name": "4",
-      "horaire": "20:25:00"
+      "name": "Elsterplatz"
     },
     "5": {
-      "name": "5",
-      "horaire": "21:25:00"
+      "name": "Nordspitze"
     },
     "6": {
-      "name": "6",
-      "horaire": "15:25:00"
+      "name": "Bauernhof"
     },
     "7": {
-      "name": "7",
-      "horaire": "19:25:00"
+      "name": ""
     },
     "8": {
-      "name": "8",
-      "horaire": "19:25:00"
-    },
-    "9": {
-      "name": "9",
-      "horaire": "19:25:00"
+      "name": ""
     }
-  }
+  },
+  "tt_delay": "-05:27",
+  "ziel": 107
 }

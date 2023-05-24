@@ -29,12 +29,6 @@ class ServiceHandler:
         self.start_label = Label(self.canvas, font=font, fg="white", bg="#313131")
         self.late_label = Label(self.canvas, font=font, fg="white", bg="#313131")
         self.stops_label = []
-        for i in range(len(self.services["stops"])):
-            self.stops_label.append(Label(self.canvas,
-                                          font=font,
-                                          fg="white",
-                                          bg="#3A393A",
-                                          text=self.services["stops"][str(i)]["name"]))
         self.arrow = Label(self.canvas, font=font, fg="white", bg="#3A393A")
 
     def service(self):
@@ -70,6 +64,12 @@ class ServiceHandler:
         self.info.getServiceInfo().config(text="Dest: " + services["dest"])
         self.start_label.config(text=services["start"])
         self.dest_label.config(text=services["dest"])
+        for i in range(len(self.services["stops"])):
+            self.stops_label.append(Label(self.canvas,
+                                          font=font,
+                                          fg="white",
+                                          bg="#3A393A",
+                                          text=self.services["stops"][str(i)]["name"]))
         self.recap()
 
     def service_not_found(self):
@@ -108,9 +108,10 @@ class ServiceHandler:
 
     def display_screen(self):
         first_stop = self.services["next_stop"]
-        last_stop = self.services["next_stop"] + 2 if self.services["next_stop"] + 2 <= self.services["max_stop"] else \
-            self.services["max_stop"]
-        self.utils.loading_screen(self.canvas, f"businfo_service_main{last_stop - first_stop + 1}.png",
+        last_stop = self.services["next_stop"] + 2 if self.services["next_stop"] + 2 <= self.services["max_stop"] - 1 \
+            else self.services["max_stop"] - 1
+        stop_delta = self.calculate_stop_delta()
+        self.utils.loading_screen(self.canvas, f"businfo_service_main{stop_delta}.png",
                                   (0, height * 67 // 640, width, height))
         for i in range(0, self.services["max_stop"] + 1):
             self.stops_label[i].place_forget()
@@ -118,10 +119,8 @@ class ServiceHandler:
             self.stops_label[i].place(x=width * 3 // 16, y=height * (391 - 83 * (i - first_stop)) // 640)
 
     def late(self):
-        first_stop = self.services["next_stop"]
-        last_stop = self.services["next_stop"] + 2 if self.services["next_stop"] + 2 <= self.services["max_stop"] else \
-            self.services["max_stop"]
-        now = datetime.strptime(time.strftime("%H:%M:%S"), "%H:%M:%S")
+        stop_delta = self.calculate_stop_delta()
+        now = datetime.strptime(self.services["game_time"], "%H:%M:%S")
         next_start = self.services["next_start"]
         if self.screen == "recap":
             late = (now - datetime.strptime(next_start, "%H:%M:%S")).total_seconds()
@@ -141,35 +140,40 @@ class ServiceHandler:
             self.late_label.after(200, self.late)
 
         elif self.screen == "main":
-            if now > datetime.strptime(self.services["stops"][str(self.services["next_stop"])]["horaire"], "%H:%M:%S"):
-                late = (now - datetime.strptime(self.services["stops"][str(self.services["next_stop"])]["horaire"],
-                                                "%H:%M:%S")).total_seconds()
-                time_late = "+ " + "{:02d}:{:02d}".format(int(late // 60), int(late % 60))
-                if int(late // 60) >= 2:
-                    self.image = ImageTk.PhotoImage(self.utils.load_image("fleches.png", (
+            time_late = self.services["tt_delay"]
+            late = time_late
+            if late[1:6] >= "02:00" and late[0:1] == "+":
+                # Yellow arrow
+                self.image = ImageTk.PhotoImage(self.utils.load_image("fleches.png", (
                     width * 65 // 256, 0, width * 389 // 1024, height * 5 // 16)))
-                    self.arrow.config(image=self.image)
-                self.utils.loading_screen(self.canvas,
-                                          f"businfo_service_main{last_stop - first_stop + 1}_r.png",
-                                          (0, height * 67 // 640, width, height))
-            else:
-                late = (datetime.strptime(self.services["stops"][str(self.services["next_stop"])]["horaire"],
-                                          "%H:%M:%S") - now).total_seconds()
-                time_late = "- " + "{:02d}:{:02d}".format(int(late // 60), int(late % 60))
-                if int(late // 60) >= 3:
-                    self.image = ImageTk.PhotoImage(self.utils.load_image("fleches.png", (
+                self.arrow.config(image=self.image)
+            if late[1:6] >= "03:00" and late[0:1] == "-":
+                # Red Arrow
+                self.image = ImageTk.PhotoImage(self.utils.load_image("fleches.png", (
                     width * 35 // 256, 0, width * 65 // 256, height * 5 // 16)))
-                    self.arrow.config(image=self.image)
-                elif 0 < int(late // 60) < 3:
-                    self.image = ImageTk.PhotoImage(self.utils.load_image("fleches.png", (
+                self.arrow.config(image=self.image)
+            elif "02:00" <= late[1:6] <= "03:00":
+                # Green Arrow
+                self.image = ImageTk.PhotoImage(self.utils.load_image("fleches.png", (
                     width * 389 // 1024, 0, width * 259 // 512, height * 5 // 16)))
-                    self.arrow.config(image=self.image)
+                self.arrow.config(image=self.image)
+            if late[0:1] == "-":
                 self.utils.loading_screen(self.canvas,
-                                          f"businfo_service_main{last_stop - first_stop + 1}_a.png",
+                                          f"businfo_service_main{stop_delta}_a.png",
+                                          (0, height * 67 // 640, width, height))
+            elif late[0:1] == "+":
+                self.utils.loading_screen(self.canvas,
+                                          f"businfo_service_main{stop_delta}_r.png",
                                           (0, height * 67 // 640, width, height))
 
             self.late_label.config(text=time_late)
             self.late_label.after(200, self.late)
+
+    def calculate_stop_delta(self) -> int:
+        first_stop = self.services["next_stop"]
+        last_stop = self.services["next_stop"] + 2 if self.services["next_stop"] + 2 <= self.services["max_stop"] - 1 \
+            else self.services["max_stop"] - 1
+        return last_stop - first_stop + 1 if last_stop - first_stop != 0 else 1
 
     def getServiceInfo(self):
         return [self.late_label, self.start_label, self.dest_label, self.arrow, self.stops_label]

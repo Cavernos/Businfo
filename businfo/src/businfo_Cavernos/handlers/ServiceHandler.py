@@ -18,6 +18,7 @@ class ServiceHandler:
         self.file_handler = FileHandler("service.json")
         self.services = self.file_handler.decode()
         self.active_service = False
+        self.old_dest = self.services["dest"]
         self.utils = Utils()
         self.canvas = canvas
         self.info = info
@@ -88,6 +89,7 @@ class ServiceHandler:
         self.dest_label.place(x=17 * width // 1024, y=height * 373 // 1280)
         self.start_label.place(x=17 * width // 1024, y=height * 647 // 1280)
         self.late_label.place(x=17 * width // 1024, y=height * 933 // 1280)
+        self.service_screen_updater()
         self.late()
 
     def main_page(self):
@@ -103,16 +105,23 @@ class ServiceHandler:
     def service_screen_updater(self):
         if self.file_handler.file_update():
             self.services = self.file_handler.decode()
-            self.display_screen()
+            if self.screen == "main":
+                self.display_screen()
+            if self.old_dest != self.services["dest"]:
+                self.old_dest = self.services["dest"]
+                for i in range(0, self.services["max_stop"] + 1):
+                    self.stops_label[i].place_forget()
+                self.arrow.place_forget()
+                self.info.getServiceInfo().config(text="Dest: " + self.services["dest"])
+                self.start_label.config(text=self.services["start"])
+                self.dest_label.config(text=self.services["dest"])
+                self.recap()
         self.canvas.after(200, self.service_screen_updater)
 
     def display_screen(self):
         first_stop = self.services["next_stop"]
         last_stop = self.services["next_stop"] + 2 if self.services["next_stop"] + 2 <= self.services["max_stop"] - 1 \
             else self.services["max_stop"] - 1
-        stop_delta = self.calculate_stop_delta()
-        self.utils.loading_screen(self.canvas, f"businfo_service_main{stop_delta}.png",
-                                  (0, height * 67 // 640, width, height))
         for i in range(0, self.services["max_stop"] + 1):
             self.stops_label[i].place_forget()
         for i in range(first_stop, last_stop + 1):
@@ -142,26 +151,40 @@ class ServiceHandler:
         elif self.screen == "main":
             time_late = self.services["tt_delay"]
             late = time_late
-            if late[1:6] >= "02:00" and late[0:1] == "+":
+            if late[2] == ":" and late[0] == "+":
+                late_int = int(late[1])
+            elif late[2] == ":" and late[0] == "-":
+                late_int = -int(late[1])
+            elif late == "+/- 0 min":
+                late_int = 0
+            else:
+                late_int = int(late[0:3])
+
+            if late_int >= 2:
                 # Yellow arrow
                 self.image = ImageTk.PhotoImage(self.utils.load_image("fleches.png", (
                     width * 65 // 256, 0, width * 389 // 1024, height * 5 // 16)))
                 self.arrow.config(image=self.image)
-            if late[1:6] >= "03:00" and late[0:1] == "-":
+            if late_int <= -3:
                 # Red Arrow
                 self.image = ImageTk.PhotoImage(self.utils.load_image("fleches.png", (
                     width * 35 // 256, 0, width * 65 // 256, height * 5 // 16)))
                 self.arrow.config(image=self.image)
-            elif "02:00" <= late[1:6] <= "03:00":
+            elif -3 < late_int < 2:
                 # Green Arrow
                 self.image = ImageTk.PhotoImage(self.utils.load_image("fleches.png", (
                     width * 389 // 1024, 0, width * 259 // 512, height * 5 // 16)))
                 self.arrow.config(image=self.image)
+
             if late[0:1] == "-":
                 self.utils.loading_screen(self.canvas,
                                           f"businfo_service_main{stop_delta}_a.png",
                                           (0, height * 67 // 640, width, height))
-            elif late[0:1] == "+":
+            elif late == "+/- 0 min":
+                self.utils.loading_screen(self.canvas,
+                                          f"businfo_service_main{stop_delta}.png",
+                                          (0, height * 67 // 640, width, height))
+            else:
                 self.utils.loading_screen(self.canvas,
                                           f"businfo_service_main{stop_delta}_r.png",
                                           (0, height * 67 // 640, width, height))

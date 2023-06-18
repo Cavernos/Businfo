@@ -1,6 +1,7 @@
 import inspect
 from tkinter import END
 
+from businfo.definitions import width, height
 from businfo.src.businfo_Cavernos.views.login import LoginView
 
 
@@ -23,7 +24,6 @@ class LoginController:
         match index:
             case 0:
                 self.frame.entry.insert(END, "1")
-                print("je suis appelé 2")
             case 1:
                 self.frame.entry.insert(END, "2")
             case 2:
@@ -54,4 +54,7 @@ class LoginController:
         user_id = self.frame.entry.get()[0:6]
         data = {"id": user_id}
         print(data)
+        self.frame.entry.delete(0, END)
         self.model.auth.login(data)
+
+

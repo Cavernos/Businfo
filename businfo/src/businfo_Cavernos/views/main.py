@@ -2,6 +2,7 @@ from tkinter import Frame
 
 from businfo.src.businfo_Cavernos.views.boot0 import Boot0View
 from businfo.src.businfo_Cavernos.views.boot1 import Boot1View
+from businfo.src.businfo_Cavernos.views.id_error import IdErrorView
 from businfo.src.businfo_Cavernos.views.loading import LoadingView
 from businfo.src.businfo_Cavernos.views.login import LoginView
 from businfo.src.businfo_Cavernos.views.root import Root
@@ -37,6 +38,7 @@ class View:
         self._add_frame(Boot1View, "boot1")
         self._add_frame(LoginView, "login")
         self._add_frame(LoadingView, "loading")
+        self._add_frame(IdErrorView, "id_error")
 
     def _add_frame(self, Frame, name):
         self.frames[name] = Frame(self.root)

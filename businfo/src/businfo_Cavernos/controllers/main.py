@@ -20,10 +20,13 @@ class Controller:
         self.model.auth.add_event_listeners("auth_changed", self.auth_state_listener)
 
     def auth_state_listener(self, data):
+        self.view.switch("loading")
+        self.view.root.after(20, self.loading_controller.frame.progress_bar.progress_start)
         if data.is_logged_in:
-            self.view.switch("loading")
+            self.view.root.after(1000, self.view.switch, "action")
         else:
-            self.view.switch("loading")
+            self.view.root.after(1000, self.view.switch, "id_error")
+            self.view.root.after(3000, self.view.switch, "login")
 
     def start(self):
         self.view.switch("boot0")

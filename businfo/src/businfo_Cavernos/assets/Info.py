@@ -5,7 +5,7 @@ from businfo.src.businfo_Cavernos.handlers.FileHandler import FileHandler
 
 
 class Info:
-    def __init__(self, panel: Frame | Tk, border: int, bg: str, width: int, height: int, service_label: Label):
+    def __init__(self, panel: Frame | Tk, border: int, bg: str, width: int, height: int):
         self.info = Frame(panel, border=border, bg=bg, width=width, height=height)
         self.font = ['US_MSFont_Faremaster', root_h * 5 // 128]
         self.bg_color = "#312D8C"
@@ -21,8 +21,6 @@ class Info:
         self.destination_label = Label(self.info, font=self.font, fg="white", bg=self.bg_color, text="D:000")
         self.line_label = Label(self.info, font=self.font, fg="white", bg=self.bg_color, text="L:0000")
 
-        self.service = service_label
-
     def getInfoFrame(self):
         return self.info
 
@@ -34,7 +32,7 @@ class Info:
         self.clock_label.after(200, self.clock)
 
     def place(self):
-        self.info.grid(row=0)
+        self.info.place(x=0, y=0)
         self.clock_label.place(x=root_w * 5 // 1024, y=root_h * 5 // 640)
         label_width = [self.driver_label.winfo_reqwidth(),
                        self.service_label.winfo_reqwidth(),

@@ -1,6 +1,6 @@
 .idea
 .vscode
-main.py
+/main.py
 pygame.py
 Businfo_Cavernos_x64_setup.exe
 build/
